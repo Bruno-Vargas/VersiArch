@@ -1,8 +1,10 @@
 package versignassi.com.versiarch
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import versignassi.com.versiarch.ui.UserActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -11,11 +13,13 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
     }
 
-    fun loginCreateUserBtnClicked(view:View){
+    fun loginLoginBtnClicked(view:View){
 
     }
-    fun lognLoginBtnCliked(view: View){
+    fun loginCreateuserBtnClicked(view: View){
 
+        val createUserIntent = Intent(this, UserActivity::class.java)
+        startActivity(createUserIntent)
     }
 
 }
