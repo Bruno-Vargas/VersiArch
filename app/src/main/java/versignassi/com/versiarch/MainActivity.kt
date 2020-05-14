@@ -1,5 +1,6 @@
 package versignassi.com.versiarch
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
     }
     fun loginBtnNavClicked(view: View) {
+        val loginIntent = Intent(this, LoginActivity::class.java)
+        startActivity(loginIntent)
 
     }
     fun sendMessageBtnClicked(view:View){
