@@ -1,11 +1,14 @@
-package versignassi.com.versiarch.ui
+package versignassi.com.versiarch.Controller
 
+import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_user.*
 import versignassi.com.versiarch.R
+import versignassi.com.versiarch.services.AuthService
 import kotlin.random.Random
 
 class UserActivity : AppCompatActivity() {
@@ -54,5 +57,18 @@ class UserActivity : AppCompatActivity() {
 
     fun createUserClicked(view:View){
 
+
+        if(createEmailTxt.text.toString() != null && createPasswordTxt.text.toString() != null)
+        {
+            println(createEmailTxt.text.toString())
+            println(createPasswordTxt.text.toString())
+            AuthService.registerUser(this, createEmailTxt.text.toString(), createPasswordTxt.text.toString()) {complete ->
+                if(complete){
+                    println("deu bom")
+                } else {
+                    println("deu ruim")
+                }
+            }
+        }
     }
 }
