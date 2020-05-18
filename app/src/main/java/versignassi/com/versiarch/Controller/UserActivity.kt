@@ -9,6 +9,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_user.*
 import versignassi.com.versiarch.R
 import versignassi.com.versiarch.services.AuthService
+import versignassi.com.versiarch.services.UserDataService
 import kotlin.random.Random
 
 class UserActivity : AppCompatActivity() {
@@ -60,11 +61,26 @@ class UserActivity : AppCompatActivity() {
 
         if(createEmailTxt.text.toString() != null && createPasswordTxt.text.toString() != null)
         {
-            println(createEmailTxt.text.toString())
-            println(createPasswordTxt.text.toString())
-            AuthService.registerUser(this, createEmailTxt.text.toString(), createPasswordTxt.text.toString()) {complete ->
-                if(complete){
-                    println("deu bom")
+            var  email = createEmailTxt.text.toString()
+            var  password = createPasswordTxt.text.toString()
+            var  userName = creteUserNameTxt.text.toString()
+
+
+            println()
+            println()
+            AuthService.registerUser(this, email, password) {registerSuccess ->
+                if(registerSuccess){
+                    AuthService.loginUser(this,email,password){loginSuccess ->
+                        if(loginSuccess) {
+                            AuthService.createUser(this,userName , email, userAvatar,avatarColor){createSuccess ->
+                                if (createSuccess){
+                                    println(UserDataService.avatarColor)
+                                    println(UserDataService.id)
+                                    finish()
+                                }
+                            }
+                        }
+                    }
                 } else {
                     println("deu ruim")
                 }
