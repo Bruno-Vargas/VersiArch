@@ -1,13 +1,15 @@
 package versignassi.com.versiarch.Controller
 
-import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.android.synthetic.main.activity_user.*
 import versignassi.com.versiarch.R
+import versignassi.com.versiarch.Utilities.BROADCAST_USER_DATA_CHANGE
 import versignassi.com.versiarch.services.AuthService
 import versignassi.com.versiarch.services.UserDataService
 import kotlin.random.Random
@@ -20,6 +22,7 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+        createSpinner.visibility = View.INVISIBLE
     }
 
 
@@ -61,30 +64,57 @@ class UserActivity : AppCompatActivity() {
 
         if(createEmailTxt.text.toString() != null && createPasswordTxt.text.toString() != null)
         {
+            enableSpinner(true)
             var  email = createEmailTxt.text.toString()
             var  password = createPasswordTxt.text.toString()
             var  userName = creteUserNameTxt.text.toString()
-
-
-            println()
-            println()
-            AuthService.registerUser(this, email, password) {registerSuccess ->
-                if(registerSuccess){
-                    AuthService.loginUser(this,email,password){loginSuccess ->
-                        if(loginSuccess) {
-                            AuthService.createUser(this,userName , email, userAvatar,avatarColor){createSuccess ->
-                                if (createSuccess){
-                                    println(UserDataService.avatarColor)
-                                    println(UserDataService.id)
-                                    finish()
+            if(email.isNotEmpty() && password.isNotEmpty() && userName.isNotEmpty()){
+                AuthService.registerUser(this, email, password) {registerSuccess ->
+                    if(registerSuccess){
+                        AuthService.loginUser(this,email,password){loginSuccess ->
+                            if(loginSuccess) {
+                                AuthService.createUser(this,userName , email, userAvatar,avatarColor){createSuccess ->
+                                    if (createSuccess){
+                                        val userDataChange  = Intent(BROADCAST_USER_DATA_CHANGE)
+                                        LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                        enableSpinner(false)
+                                        finish()
+                                    } else {
+                                        errorToast("Erro ao Add User")
+                                    }
                                 }
+                            } else {
+                                errorToast("Erro ao Logar")
                             }
                         }
+                    } else {
+                        errorToast("Erro ao registrar")
+
                     }
-                } else {
-                    println("deu ruim")
                 }
+            } else {
+                errorToast("Fill all fiends")
             }
+
         }
+    }
+
+
+    fun enableSpinner(enable:Boolean){
+        if(enable){
+            createSpinner.visibility = View.VISIBLE
+        } else {
+            createSpinner.visibility = View.INVISIBLE
+        }
+        createChangebackgroundBtn.isEnabled = !enable
+        createAvatarImageView.isEnabled = !enable
+        createUserBtn.isEnabled = !enable
+    }
+
+    fun errorToast(message: String)
+    {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        enableSpinner(false)
+
     }
 }
